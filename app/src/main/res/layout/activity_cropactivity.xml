@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".cropactivity">
+
+    <com.takusemba.cropme.CropView
+        android:id="@+id/cropView"
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cropme_background_alpha="80%"
+        app:cropme_max_scale="3"
+        app:cropme_result_height="100%"
+        app:cropme_result_width="100%"
+        app:cropme_with_border="true" />
+
+</LinearLayout>

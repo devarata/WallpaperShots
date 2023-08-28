@@ -1,0 +1,180 @@
+package ethered.wallpapershots;
+
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.OnClick;
+
+public class ImagesView extends AppCompatActivity {
+    DocumentReference mdocref = FirebaseFirestore.getInstance().collection("ImageURLs").document("test");
+    CollectionReference mCol1Ref = FirebaseFirestore.getInstance().collection("ImageURLs");
+    Button bt;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_images_view);
+
+
+      //*  bt=(Button)findViewById(R.id.bt1);
+        bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("Working","Inside onClick");
+
+                mCol1Ref.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        Log.d("Working in collections",queryDocumentSnapshots.getDocumentChanges().toString());
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                        Log.d("Not Working","Inside onFailure");
+                    }
+                });
+
+                mdocref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                        Log.d("Working in documents","everything a-okay here");
+                        }
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("Not Working","Inside onFailure");
+                    }
+                });
+
+            }
+        }); *//
+
+
+
+
+        }
+
+
+    }
+
+
+
+
+
+//////////////////////////////////////////////////////////ImgadapterRv////////////////////////////////////////////////////////
+package ethered.wallpapershots;
+
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.storage.StorageReference;
+import com.marshalchen.ultimaterecyclerview.expanx.Util.parent;
+
+import java.io.InputStream;
+import java.util.List;
+
+
+
+public class ImageModelRecyclerAdapter extends RecyclerView.Adapter<ImageModelRecyclerAdapter.ViewHolder> {
+
+
+    public class ViewHolder extends RecyclerView.ViewHolder{
+
+        public TextView imageView;
+        private TextView photographersname;
+
+        private ViewHolder(View itemView) {
+            super(itemView);
+
+
+            imageView = (TextView) itemView.findViewById(R.id.userid);
+            photographersname = (TextView)itemView.findViewById(R.id.URL);
+
+        }
+    }
+
+
+
+    public List<String> ImageModelList1;
+    public List<ImageModel> imageModelList;
+    public Context context;
+
+
+    public ImageModelRecyclerAdapter(Context applicationContext, List<ImageModel> ImageModelList){
+        context = applicationContext;
+        imageModelList = ImageModelList;
+    }
+
+    @NonNull
+    @Override
+    public ImageModelRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.tempimglay, parent, false);
+        return new ViewHolder(view);
+    }
+
+
+    @Override
+    public void onBindViewHolder(@NonNull ImageModelRecyclerAdapter.ViewHolder holder, int position) {
+        ImageModel currentimage = imageModelList.get(position);
+        Log.d("Firestore1",currentimage.getimage_url());
+        Log.d("Firestore1",currentimage.getuser_id());
+        holder.photographersname.setText(currentimage.getuser_id());
+        holder.imageView.setText(currentimage.getimage_url());
+        /*
+        String userid = ImageModelList.get(position).getuser_id();
+        String imageurl = ImageModelList.get(position).getimage_url();
+        holder.photographersname.setText(userid);
+        holder.imageView.setText(imageurl);    */
+/*
+        Glide.with(context)
+                .load(imageModelList.get(position).getImageURL())
+                .into(holder.imageView); */
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return imageModelList.size();
+    }
+
+
+
+}
